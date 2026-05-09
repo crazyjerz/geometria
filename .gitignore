@@ -1,0 +1,9 @@
+.Rbuildignore
+.Rhistory
+geometria.Rproj
+.Rproj.user/*
+*.so
+*.exe
+*.dll
+*.o
+.vscode/*
