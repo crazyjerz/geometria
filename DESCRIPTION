@@ -1,0 +1,15 @@
+Package: geometria
+Type: 
+Title: Computational Geometry for R
+Version: 0.0.1
+Authors@R: c(
+    person(
+      "Jerzy", "Adrjan",
+      email = "01199216@pw.edu.pl",
+      role = c("aut", "cre")
+    )
+  )
+Description: WIP
+License: WIP
+Encoding: UTF-8
+LazyData: true

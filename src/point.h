@@ -1,5 +1,6 @@
 #ifndef POINT
 #define POINT
+#define eps (1e-12)
 
 typedef struct{
     double x;

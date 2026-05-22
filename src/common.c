@@ -2,18 +2,29 @@
 #include<math.h>
 #include<stdio.h>
 #include"point.h"
+#include<omp.h>
+#define INSERTION_THRESHOLD 16
+#define PARALLEL_THRESHOLD 1e4
+#define MAX_DEPTH_MULTIPLIER 2
 
-int Angle(Point o, Point a, Point b){
+static inline int Angle(Point o, Point a, Point b){
     double ax = a.x - o.x, ay = a.y - o.y;
     double bx = b.x - o.x, by = b.y - o.y;
     double c = ax * by - ay * bx;
-    if (c > 1e-12) return 1;
-    if (c < -1e-12) return -1;
+    if (c > eps) return 1;
+    if (c < -eps) return -1;
     double da = ax*ax + ay*ay;
     double db = bx*bx + by*by;
     if (da < db) return 1;
     if (da > db) return -1;
     return 0;
+}
+
+int Orient(Point o, Point a, Point b){
+    double ax = a.x - o.x, ay = a.y - o.y;
+    double bx = b.x - o.x, by = b.y - o.y;
+    double c = ax * by - ay * bx;
+    return (c > eps) - (c < -eps);
 }
 
 static inline int lex(Point a, Point b){
@@ -38,7 +49,7 @@ static inline Point medianThree_lex(Point a, Point b, Point c){
     else return c;
 }
 
-double ScalarProduct(Point a, Point b){
+inline double ScalarProduct(Point a, Point b){
     return a.x * b.y - a.y * b.x;
 }
 
@@ -141,118 +152,72 @@ static void insertionsort_lex(Point* A, int lo, int hi){
     }
 }
 
-static void quicksort_parallel(Point* A, Point zero, int lo, int hi)
-{
-    if (hi - lo <= 16) {
+static void quicksort_parallel(Point* A, Point zero, int lo, int hi, int depth){
+    if (hi - lo <= INSERTION_THRESHOLD) {
         insertionsort(A, zero, lo, hi);
         return;
     }
 
     int p = partition(A, zero, lo, hi);
 
-    if (hi - lo < 1e4) {
-        if(p - lo > hi - p){
-            quicksort_parallel(A, zero, lo, p);
-            quicksort_parallel(A, zero, p + 1, hi);
-        }else{
-            quicksort_parallel(A, zero, p + 1, hi);
-            quicksort_parallel(A, zero, lo, p);
-        }
+    if (hi - lo <= PARALLEL_THRESHOLD || depth <= 0) {
+        quicksort_parallel(A, zero, lo, p, 0);
+        quicksort_parallel(A, zero, p + 1, hi, 0);
         return;
     }
 
-    if(p - lo > hi - p){
-        #pragma omp task default(none) firstprivate(A, lo, p)
-        quicksort_parallel(A, zero, lo, p);
+    #pragma omp task default(none) firstprivate(A, zero, lo, p, depth)
+    quicksort_parallel(A, zero, lo, p, depth - 1);
 
-        #pragma omp task default(none) firstprivate(A, p, hi)
-        quicksort_parallel(A, zero, p + 1, hi);
-    }else{
-        #pragma omp task default(none) firstprivate(A, p, hi)
-        quicksort_parallel(A, zero, p + 1, hi);
-        
-        #pragma omp task default(none) firstprivate(A, lo, p)
-        quicksort_parallel(A, zero, lo, p);
-    }
+    #pragma omp task default(none) firstprivate(A, zero, p, hi, depth)
+    quicksort_parallel(A, zero, p + 1, hi, depth - 1);
 
     #pragma omp taskwait
 }
 
-static void quicksort_parallel_lex(Point* A, int lo, int hi)
-{
-    if (hi - lo <= 16) {
+static void quicksort_parallel_lex(Point* A, int lo, int hi, int depth){
+    if (hi - lo <= INSERTION_THRESHOLD) {
         insertionsort_lex(A, lo, hi);
         return;
     }
 
     int p = partition_lex(A, lo, hi);
 
-    if (hi - lo < 1e4) {
-        if(p - lo > hi - p){
-            quicksort_parallel_lex(A, lo, p);
-            quicksort_parallel_lex(A, p + 1, hi);
-        }else{
-            quicksort_parallel_lex(A, p + 1, hi);
-            quicksort_parallel_lex(A, lo, p);
-        }
+    if (hi - lo <= PARALLEL_THRESHOLD || depth <= 0) {
+        quicksort_parallel_lex(A, lo, p, 0);
+        quicksort_parallel_lex(A, p + 1, hi, 0);
         return;
     }
 
-    if(p - lo > hi - p){
-        #pragma omp task default(none) firstprivate(A, lo, p)
-        quicksort_parallel_lex(A, lo, p);
+    #pragma omp task default(none) firstprivate(A, lo, p, depth)
+    quicksort_parallel_lex(A, lo, p, depth - 1);
 
-        #pragma omp task default(none) firstprivate(A, p, hi)
-        quicksort_parallel_lex(A, p + 1, hi);
-    }else{
-        #pragma omp task default(none) firstprivate(A, p, hi)
-        quicksort_parallel_lex(A, p + 1, hi);
-
-        #pragma omp task default(none) firstprivate(A, lo, p)
-        quicksort_parallel_lex(A, lo, p);
-    }
-    
+    #pragma omp task default(none) firstprivate(A, p, hi, depth)
+    quicksort_parallel_lex(A, p + 1, hi, depth - 1);
 
     #pragma omp taskwait
 }
 
-void quicksort(Point* A, Point zero, int lo, int hi)
-{
+void quicksort(Point* A, Point zero, int lo, int hi){
+    int depth = MAX_DEPTH_MULTIPLIER * (int)log2(omp_get_max_threads());
+
     #pragma omp parallel
     {
         #pragma omp single nowait
         {
-            quicksort_parallel(A, zero, lo, hi);
+            quicksort_parallel(A, zero, lo, hi, depth);
         }
     }
 }
 
+void quicksort_lex(Point* A, int lo, int hi){
+    int depth = MAX_DEPTH_MULTIPLIER * (int)log2(omp_get_max_threads());
 
-void quicksort_lex(Point* A, int lo, int hi)
-{
     #pragma omp parallel
     {
         #pragma omp single nowait
         {
-            quicksort_parallel_lex(A, lo, hi);
+            quicksort_parallel_lex(A, lo, hi, depth);
         }
-    }
-}
-
-int main(void){
-    Point* polygon = malloc(5*sizeof(Point));
-    polygon[0].x = 0;
-    polygon[1].x = 0;
-    polygon[2].x = 1;
-    polygon[3].x = 0;
-    polygon[4].x = -2;
-    polygon[0].y = 0;
-    polygon[1].y = 1;
-    polygon[2].y = 1;
-    polygon[3].y = 2;
-    polygon[4].y = -5;
-    quicksort_lex(polygon, 0, 5);
-    for(int i = 0; i < 5; i++){
-        printf("(%.2f, %.2f)", polygon[i].x, polygon[i].y);
     }
 }

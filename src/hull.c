@@ -5,7 +5,7 @@
 #include<omp.h>
 #include<math.h>
 
-#define cmp(X, Y) (fabs(X-Y)<1e-12)
+#define cmp(X, Y) (fabs(X-Y)<eps)
 #define min(X, Y) (X < Y ? X : Y)
 
 Point* chull_graham(Point* polygon, size_t size, size_t* out_size){
@@ -28,8 +28,9 @@ Point* chull_graham(Point* polygon, size_t size, size_t* out_size){
     stack_push(&stack, polygon[0]);
     stack_push(&stack, polygon[1]);
     for(int i = 2; i < size; i++){
+        if(dup(polygon[i-1], polygon[i])) continue;
         while(1){
-            if(Angle(stack_subpeek(&stack), stack_peek(&stack), polygon[i]) <= 0){
+            if(Orient(stack_subpeek(&stack), stack_peek(&stack), polygon[i]) <= 0){
                 stack_pop(&stack);
             }else break;
         }
@@ -44,21 +45,44 @@ Point* chull_andrew(Point* polygon, size_t size, size_t* out_size){
         *out_size = size;
         return polygon;
     }
-    
+    quicksort_lex(polygon, 0, size-1);
+    Stack stack1, stack2;
+    #pragma omp parallel sections
+    {
+        #pragma omp section
+        {
+            stack_init(&stack1, min(size+1, 1024));
+            for(int i = 0; i < size; i++){
+                if(i != 0 && dup(polygon[i], polygon[i-1])) continue;
+                while(stack1.size >= 2 && Orient(stack_subpeek(&stack1), stack_peek(&stack1), polygon[i]) <= 0) stack_pop(&stack1);
+                stack_push(&stack1, polygon[i]);
+            }
+        }
+        #pragma omp section
+        {
+            stack_init(&stack2, min(size+1, 1024));
+            for(int i = size-1; i >= 0; i--){
+                if(i != size-1 && dup(polygon[i+1], polygon[i])) continue;
+                while(stack2.size >= 2 && Orient(stack_subpeek(&stack2), stack_peek(&stack2), polygon[i]) <= 0) stack_pop(&stack2);
+                stack_push(&stack2, polygon[i]);
+            }
+        }
+    }
+    *out_size = (stack1.size+stack2.size-2);
+    Point* output = malloc(((stack1.size+stack2.size-2))*sizeof(Point));
+    for(int i = 0; i < stack1.size; i++) output[i] = stack1.data[i];
+    for(int i = stack2.size - 2; i > 0; i--) output[(stack1.size+stack2.size-2)-i] = stack2.data[i];
+    return output;
 }
 
 int main(void){
-    Point* polygon = malloc(4*sizeof(Point));
-    polygon[0].x = 0;
-    polygon[1].x = 0;
-    polygon[2].x = 1;
-    polygon[3].x = 0;
-    polygon[0].y = 0;
-    polygon[1].y = 1;
-    polygon[2].y = 1;
-    polygon[3].y = 2;
+    Point* polygon = malloc(100*sizeof(Point));
+    for(int i = 0; i < 1000; i++){
+        polygon[i].x = i%3;
+        polygon[i].y = i%4;
+    }
     size_t out;
-    Point* res = chull_graham(polygon, 4, &out);
+    Point* res = chull_andrew(polygon, 1000, &out);
     for(int i = 0; i < out; i++){
         printf("(%.2f, %.2f)", res[i].x, res[i].y);
     }
