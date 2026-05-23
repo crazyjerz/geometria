@@ -4,7 +4,7 @@
 #include"point.h"
 #include<omp.h>
 #define INSERTION_THRESHOLD 16
-#define PARALLEL_THRESHOLD 1e4
+#define PARALLEL_THRESHOLD 10000
 #define MAX_DEPTH_MULTIPLIER 2
 
 static inline int Angle(Point o, Point a, Point b){
@@ -53,6 +53,23 @@ static inline Point medianThree_lex(Point a, Point b, Point c){
     if (g ^ lex(a, c) > 0) return a;
     else if (g ^ lex(b, c) < 0) return b;
     else return c;
+}
+
+static inline Point ninther(Point* A, Point zero, int l, int h){
+    medianThree(
+        zero,
+        medianThree(zero, A[l],         A[l+(h-l)/6],   A[l+(h-l)/3]),
+        medianThree(zero, A[l+(h-l)/3], A[l+(h-l)/2],   A[l+2*(h-l)/3]),
+        medianThree(zero, A[l+2*(h-l)/3], A[l+5*(h-l)/6], A[h])
+    );
+}
+
+static inline Point ninther_lex(Point* A, int l, int h){
+    medianThree_lex(
+        medianThree_lex(A[l],         A[l+(h-l)/6],   A[l+(h-l)/3]),
+        medianThree_lex(A[l+(h-l)/3], A[l+(h-l)/2],   A[l+2*(h-l)/3]),
+        medianThree_lex(A[l+2*(h-l)/3], A[l+5*(h-l)/6], A[h])
+    );
 }
 
 inline double ScalarProduct(Point a, Point b){
@@ -140,7 +157,8 @@ static void quicksort_parallel(Point* A, Point zero, int lo, int hi, int depth){
         return;
     }
 
-    Point pivot = medianThree(zero, A[lo], A[(lo+hi)/2], A[hi]);
+    Point pivot = (hi - lo > PARALLEL_THRESHOLD) ? ninther(A, zero, lo, hi) : medianThree(zero, A[lo], A[(lo+hi)/2], A[hi]);
+
     int lt = lo, gt = hi, i = lo;
     while(i <= gt){
         int c = Angle(zero, A[i], pivot);
@@ -170,7 +188,8 @@ static void quicksort_parallel_lex(Point* A, int lo, int hi, int depth){
         return;
     }
 
-    Point pivot = medianThree_lex(A[lo], A[(lo+hi)/2], A[hi]);
+    Point pivot = (hi - lo > PARALLEL_THRESHOLD) ? ninther_lex(A, lo, hi) : medianThree_lex(A[lo], A[(lo+hi)/2], A[hi]);
+
     int lt = lo, gt = hi, i = lo;
     while(i <= gt){
         int c = lex(A[i], pivot);
