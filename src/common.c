@@ -34,11 +34,11 @@ int OrientNum(Point o, Point a, Point b){
 }
 
 static inline int lex(Point a, Point b){
+    if(fabs(a.x - b.x) < eps && fabs(a.y - b.y) < eps) return 0;
     if(a.x < b.x) return -1;
     if(a.x > b.x) return 1;
     if(a.y < b.y) return -1;
     if(a.y > b.y) return 1;
-    return 0;
 }
 
 static inline Point medianThree(Point zero, Point a, Point b, Point c){
@@ -110,30 +110,6 @@ static inline void swap(Point* a, Point* b){
     *b = t;
 }
 
-static int partition(Point* A, Point zero, int lo, int hi){
-    Point pivot = medianThree(zero, A[lo], A[(lo+hi)/2], A[hi]);
-    int i = lo - 1; 
-    int j = hi + 1;
-    while(1){
-        do i++; while(Angle(zero, A[i], pivot) > 0);
-        do j--; while(Angle(zero, A[j], pivot) < 0);
-        if(i >= j) return j;
-        swap(&A[i], &A[j]);
-    }
-}
-
-static int partition_lex(Point* A, int lo, int hi){
-    Point pivot = medianThree_lex(A[lo], A[(lo+hi)/2], A[hi]);
-    int i = lo - 1; 
-    int j = hi + 1;
-    while(1){
-        do i++; while(lex(A[i], pivot) < 0);
-        do j--; while(lex(A[j], pivot) > 0);
-        if(i >= j) return j;
-        swap(&A[i], &A[j]);
-    }
-}
-
 static void insertionsort(Point* A, Point zero, int lo, int hi){
     for (int i = lo + 1; i <= hi; i++){
         Point k = A[i];
@@ -164,52 +140,64 @@ static void quicksort_parallel(Point* A, Point zero, int lo, int hi, int depth){
         return;
     }
 
-    int p = partition(A, zero, lo, hi);
+    Point pivot = medianThree(zero, A[lo], A[(lo+hi)/2], A[hi]);
+    int lt = lo, gt = hi, i = lo;
+    while(i <= gt){
+        int c = Angle(zero, A[i], pivot);
+        if(c > 0)      swap(&A[lt++], &A[i++]);
+        else if(c < 0) swap(&A[i],    &A[gt--]);
+        else           i++;
+    }
 
-    if (hi - lo <= PARALLEL_THRESHOLD || depth <= 0) {
-        quicksort_parallel(A, zero, lo, p, 0);
-        quicksort_parallel(A, zero, p + 1, hi, 0);
+    if(hi - lo <= PARALLEL_THRESHOLD || depth <= 0){
+        quicksort_parallel(A, zero, lo, lt - 1, 0);
+        quicksort_parallel(A, zero, gt + 1, hi, 0);
         return;
     }
 
-    #pragma omp task default(none) firstprivate(A, zero, lo, p, depth)
-    quicksort_parallel(A, zero, lo, p, depth - 1);
+    #pragma omp task default(none) firstprivate(A, zero, lo, lt, depth)
+    quicksort_parallel(A, zero, lo, lt - 1, depth - 1);
 
-    #pragma omp task default(none) firstprivate(A, zero, p, hi, depth)
-    quicksort_parallel(A, zero, p + 1, hi, depth - 1);
+    #pragma omp task default(none) firstprivate(A, zero, gt, hi, depth)
+    quicksort_parallel(A, zero, gt + 1, hi, depth - 1);
 
     #pragma omp taskwait
 }
 
 static void quicksort_parallel_lex(Point* A, int lo, int hi, int depth){
-    if (hi - lo <= INSERTION_THRESHOLD) {
+    if (hi - lo <= INSERTION_THRESHOLD){
         insertionsort_lex(A, lo, hi);
         return;
     }
 
-    int p = partition_lex(A, lo, hi);
+    Point pivot = medianThree_lex(A[lo], A[(lo+hi)/2], A[hi]);
+    int lt = lo, gt = hi, i = lo;
+    while(i <= gt){
+        int c = lex(A[i], pivot);
+        if(c < 0)      swap(&A[lt++], &A[i++]);
+        else if(c > 0) swap(&A[i],    &A[gt--]);
+        else           i++;
+    }
 
-    if (hi - lo <= PARALLEL_THRESHOLD || depth <= 0) {
-        quicksort_parallel_lex(A, lo, p, 0);
-        quicksort_parallel_lex(A, p + 1, hi, 0);
+    if(lt - lo <= PARALLEL_THRESHOLD || depth <= 0){
+        quicksort_parallel_lex(A, lo, lt - 1, 0);
+        quicksort_parallel_lex(A, gt + 1, hi, 0);
         return;
     }
 
-    #pragma omp task default(none) firstprivate(A, lo, p, depth)
-    quicksort_parallel_lex(A, lo, p, depth - 1);
-
-    #pragma omp task default(none) firstprivate(A, p, hi, depth)
-    quicksort_parallel_lex(A, p + 1, hi, depth - 1);
-
+    #pragma omp task firstprivate(A, lo, lt, depth)
+    quicksort_parallel_lex(A, lo, lt - 1, depth - 1);
+    #pragma omp task firstprivate(A, gt, hi, depth)
+    quicksort_parallel_lex(A, gt + 1, hi, depth - 1);
     #pragma omp taskwait
 }
 
 void quicksort(Point* A, Point zero, int lo, int hi){
-    int depth = MAX_DEPTH_MULTIPLIER * (int)log2(omp_get_max_threads());
-
+    int depth = (int)log2(omp_get_max_threads());
     #pragma omp parallel
+    #pragma omp single
     {
-        #pragma omp single nowait
+        #pragma omp taskgroup
         {
             quicksort_parallel(A, zero, lo, hi, depth);
         }
@@ -217,11 +205,11 @@ void quicksort(Point* A, Point zero, int lo, int hi){
 }
 
 void quicksort_lex(Point* A, int lo, int hi){
-    int depth = MAX_DEPTH_MULTIPLIER * (int)log2(omp_get_max_threads());
-
+    int depth = (int)log2(omp_get_max_threads());
     #pragma omp parallel
+    #pragma omp single
     {
-        #pragma omp single nowait
+        #pragma omp taskgroup
         {
             quicksort_parallel_lex(A, lo, hi, depth);
         }

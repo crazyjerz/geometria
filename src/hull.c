@@ -29,7 +29,7 @@ Point* chull_graham(Point* polygon, size_t size, size_t* out_size){
     stack_push(&stack, polygon[1]);
     for(int i = 2; i < size; i++){
         if(dup(polygon[i-1], polygon[i])) continue;
-        while(1){
+        while(stack.size >= 2){
             if(Orient(stack_subpeek(&stack), stack_peek(&stack), polygon[i]) <= 0){
                 stack_pop(&stack);
             }else break;
@@ -47,11 +47,12 @@ Point* chull_andrew(Point* polygon, size_t size, size_t* out_size){
     }
     quicksort_lex(polygon, 0, size-1);
     Stack stack1, stack2;
+    stack_init(&stack1, size+1);
+    stack_init(&stack2, size+1);
     #pragma omp parallel sections
     {
         #pragma omp section
         {
-            stack_init(&stack1, size+1);
             for(int i = 0; i < size; i++){
                 if(i != 0 && dup(polygon[i], polygon[i-1])) continue;
                 while(stack1.size >= 2 && Orient(stack_subpeek(&stack1), stack_peek(&stack1), polygon[i]) <= 0) stack_pop(&stack1);
@@ -60,7 +61,6 @@ Point* chull_andrew(Point* polygon, size_t size, size_t* out_size){
         }
         #pragma omp section
         {
-            stack_init(&stack2, size+1);
             for(int i = size-1; i >= 0; i--){
                 if(i != size-1 && dup(polygon[i+1], polygon[i])) continue;
                 while(stack2.size >= 2 && Orient(stack_subpeek(&stack2), stack_peek(&stack2), polygon[i]) <= 0) stack_pop(&stack2);
@@ -139,8 +139,8 @@ Point* chull_quick(Point* polygon, size_t size, size_t* out_size){
 }
 
 int main(void){
-    Point* polygon = malloc(200*sizeof(Point));
-    for(int i = 0; i < 100; i++){
+    Point* polygon = malloc(2000000*sizeof(Point));
+    for(int i = 0; i < 1000000; i++){
         polygon[i].x = i%8;
         polygon[i].y = i%11;
         if((i%8 == 0 && i%11 == 0) || (i%8 == 7 && i%11 == 10) || (i%8 == 0 && i%11 == 10) || (i%8 == 7 && i%11 == 0)){
@@ -148,12 +148,12 @@ int main(void){
             polygon[i].y = 4;
         }
     }
-    for(int i = 0; i < 100; i++){
-        polygon[100+i].x = 1-((double)i)/100;
-        polygon[100+i].y = ((double)i)/100;
+    for(int i = 0; i < 1000000; i++){
+        polygon[1000000+i].x = 1-((double)i)/1000000;
+        polygon[1000000+i].y = ((double)i)/1000000;
     }
     size_t out;
-    Point* res = chull_andrew(polygon, 200, &out);
+    Point* res = chull_graham(polygon, 2000000, &out);
     for(int i = 0; i < out; i++){
         printf("(%.2f, %.2f)", res[i].x, res[i].y);
     }
