@@ -25,6 +25,13 @@ Point* chull_graham(Point* polygon, size_t size, size_t* out_size){
     Stack stack;
     stack_init(&stack, size+1);
     quicksort(polygon, polygon[0], 1, size-1);
+    if(polygon[1].x == polygon[size-1].x && polygon[1].y == polygon[size-1].y){
+        Point* output = malloc(sizeof(Point)*2);
+        output[0] = polygon[0];
+        output[1] = polygon[1];
+        *out_size = 2;
+        return output;
+    }
     stack_push(&stack, polygon[0]);
     stack_push(&stack, polygon[1]);
     for(int i = 2; i < size; i++){
@@ -46,6 +53,12 @@ Point* chull_andrew(Point* polygon, size_t size, size_t* out_size){
         return polygon;
     }
     quicksort_lex(polygon, 0, size-1);
+    if(polygon[0].x == polygon[size-1].x && polygon[0].y == polygon[size-1].y){
+        Point* output = malloc(sizeof(Point));
+        output[0] = polygon[0];
+        *out_size = 1;
+        return output;
+    }
     Stack stack1, stack2;
     stack_init(&stack1, size+1);
     stack_init(&stack2, size+1);
@@ -139,8 +152,8 @@ Point* chull_quick(Point* polygon, size_t size, size_t* out_size){
 }
 
 int main(void){
-    Point* polygon = malloc(2000000*sizeof(Point));
-    for(int i = 0; i < 1000000; i++){
+    Point* polygon = malloc(200000000*sizeof(Point));
+    for(int i = 0; i < 100000000; i++){
         polygon[i].x = i%8;
         polygon[i].y = i%11;
         if((i%8 == 0 && i%11 == 0) || (i%8 == 7 && i%11 == 10) || (i%8 == 0 && i%11 == 10) || (i%8 == 7 && i%11 == 0)){
@@ -148,12 +161,12 @@ int main(void){
             polygon[i].y = 4;
         }
     }
-    for(int i = 0; i < 1000000; i++){
-        polygon[1000000+i].x = 1-((double)i)/1000000;
-        polygon[1000000+i].y = ((double)i)/1000000;
+    for(int i = 0; i < 100000000; i++){
+        polygon[100000000+i].x = 1-((double)i)/100000000;
+        polygon[100000000+i].y = ((double)i)/100000000;
     }
     size_t out;
-    Point* res = chull_graham(polygon, 2000000, &out);
+    Point* res = chull_quick(polygon, 200000000, &out);
     for(int i = 0; i < out; i++){
         printf("(%.2f, %.2f)", res[i].x, res[i].y);
     }
