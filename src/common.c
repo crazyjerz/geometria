@@ -157,7 +157,7 @@ static void quicksort_parallel(Point* A, Point zero, int lo, int hi, int depth){
         return;
     }
 
-    Point pivot = (hi - lo > PARALLEL_THRESHOLD) ? ninther(A, zero, lo, hi) : medianThree(zero, A[lo], A[(lo+hi)/2], A[hi]);
+    Point pivot = medianThree(zero, A[lo], A[(lo+hi)/2], A[hi]);
 
     int lt = lo, gt = hi, i = lo;
     while(i <= gt){
@@ -183,12 +183,12 @@ static void quicksort_parallel(Point* A, Point zero, int lo, int hi, int depth){
 }
 
 static void quicksort_parallel_lex(Point* A, int lo, int hi, int depth){
+    Point pivot = medianThree_lex(A[lo], A[(lo+hi)/2], A[hi]);
+
     if (hi - lo <= INSERTION_THRESHOLD){
         insertionsort_lex(A, lo, hi);
         return;
     }
-
-    Point pivot = (hi - lo > PARALLEL_THRESHOLD) ? ninther_lex(A, lo, hi) : medianThree_lex(A[lo], A[(lo+hi)/2], A[hi]);
 
     int lt = lo, gt = hi, i = lo;
     while(i <= gt){
