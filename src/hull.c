@@ -194,8 +194,8 @@ Point* chull_quick(Point* polygon, size_t size, size_t* out_size){
 }
 
 int main(void){
-    Point* polygon = malloc(200000000*sizeof(Point));
-    for(int i = 0; i < 100000000; i++){
+    Point* polygon = malloc(20000000*sizeof(Point));
+    for(int i = 0; i < 10000000; i++){
         polygon[i].x = i%8;
         polygon[i].y = i%11;
         if((i%8 == 0 && i%11 == 0) || (i%8 == 7 && i%11 == 10) || (i%8 == 0 && i%11 == 10) || (i%8 == 7 && i%11 == 0)){
@@ -203,12 +203,12 @@ int main(void){
             polygon[i].y = 4;
         }
     }
-    for(int i = 0; i < 100000000; i++){
-        polygon[100000000+i].x = 1-((double)i)/100000000;
-        polygon[100000000+i].y = ((double)i)/100000000;
+    for(int i = 0; i < 10000000; i++){
+        polygon[10000000+i].x = 1-((double)i)/10000000;
+        polygon[10000000+i].y = ((double)i)/10000000;
     }
     size_t out;
-    Point* res = chull_andrew(polygon, 200000000, &out);
+    Point* res = chull_quick(polygon, 20000000, &out);
     for(int i = 0; i < out; i++){
         printf("(%.2f, %.2f)", res[i].x, res[i].y);
     }
