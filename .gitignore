@@ -7,3 +7,4 @@ geometria.Rproj
 *.dll
 *.o
 .vscode/*
+.RData
