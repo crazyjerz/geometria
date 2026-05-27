@@ -2,7 +2,6 @@
 #define COMMON_H
 #include<stdlib.h>
 #include"point.h"
-#define dup(a, b) (fabs(a.x - b.x) < eps && fabs(a.y - b.y) < eps)
 
 extern int Orient(Point o, Point a, Point b);
 extern int OrientNum(Point o, Point a, Point b);
