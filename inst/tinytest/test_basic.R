@@ -2,6 +2,8 @@ library(tinytest)
 library(geometria)
 
 run <- function(x, y){
+    x <- x + runif(1)
+    y <- y + runif(1)
     expect_true(hull_equal(x, y, C.chull(x, y, "graham", "indices"), chull(x, y)))
     expect_true(hull_equal(x, y, C.chull(x, y, "andrew", "indices"), chull(x, y)))
     expect_true(hull_equal(x, y, C.chull(x, y, "quick", "indices"), chull(x, y)))
@@ -23,6 +25,7 @@ hull_equal <- function(x, y, h1, h2, tol = 1e-12){
     all(abs(p1 - p2) < tol)
 }
 
+
 # test 1: basic point-in-triangle
 run(c(0, 0, 4, 1), c(0, 4, 0, 1))
 
@@ -34,3 +37,6 @@ run(c(0, 0, 1, 1, 0, 0), c(0, 0, 0, 0, 1, 1))
 
 # test 4: single point duplicated
 run(c(0, 0, 0, 0, 0), c(0, 0, 0, 0, 0))
+
+# test 5: duplicates inside of triangle
+run(c(-1, 1, 1, 0, 0, 0, 0, 0), c(-1, -1, 0, 0, 0, 0, 0, 0))
