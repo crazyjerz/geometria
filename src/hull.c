@@ -70,7 +70,7 @@ Point* chull_andrew(Point* polygon, size_t size, size_t* out_size){
         return output;
     }
     quicksort_lex(polygon, 0, size-1);
-    if(polygon[0].x == polygon[size-1].x && polygon[0].y == polygon[size-1].y){
+    if(dup(polygon[0], polygon[size-1])){
         Point* output = malloc(sizeof(Point));
         output[0] = polygon[0];
         *out_size = 1;

@@ -153,6 +153,7 @@ static void insertionsort_lex(Point* A, int lo, int hi){
 }
 
 static void quicksort_parallel(Point* A, Point zero, int lo, int hi, int depth){
+    if(lo >= hi) return;
     if (hi - lo <= INSERTION_THRESHOLD) {
         insertionsort(A, zero, lo, hi);
         return;
@@ -167,6 +168,8 @@ static void quicksort_parallel(Point* A, Point zero, int lo, int hi, int depth){
         else if(c < 0) swap(&A[i],    &A[gt--]);
         else           i++;
     }
+
+    if(dup(A[lo], A[lt]) && dup(A[gt], A[hi])) return;
 
     if(hi - lo <= PARALLEL_THRESHOLD || depth <= 0){
         quicksort_parallel(A, zero, lo, lt - 1, 0);
@@ -184,6 +187,7 @@ static void quicksort_parallel(Point* A, Point zero, int lo, int hi, int depth){
 }
 
 static void quicksort_parallel_lex(Point* A, int lo, int hi, int depth){
+    if(lo >= hi) return;
     Point pivot = medianThree_lex(A[lo], A[(lo+hi)/2], A[hi]);
 
     if (hi - lo <= INSERTION_THRESHOLD){
@@ -198,6 +202,8 @@ static void quicksort_parallel_lex(Point* A, int lo, int hi, int depth){
         else if(c > 0) swap(&A[i],    &A[gt--]);
         else           i++;
     }
+
+    if(dup(A[lo], A[lt]) && dup(A[gt], A[hi])) return;
 
     if(lt - lo <= PARALLEL_THRESHOLD || depth <= 0){
         quicksort_parallel_lex(A, lo, lt - 1, 0);
