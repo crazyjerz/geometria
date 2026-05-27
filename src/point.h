@@ -5,6 +5,7 @@
 typedef struct{
     double x;
     double y;
+    int idx;
 } Point;
 
 typedef struct {

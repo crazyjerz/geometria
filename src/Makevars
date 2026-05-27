@@ -1,0 +1,4 @@
+CFLAGS = -O3 -Wall -std=c11 -fopenmp
+CXXFLAGS = -O3 -Wall -fopenmp
+PKG_CFLAGS = -O3 -Wall -std=c11 -fopenmp
+PKG_LIBS = -fopenmp
