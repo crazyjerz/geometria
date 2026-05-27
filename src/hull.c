@@ -9,6 +9,12 @@
 #define min(X, Y) (X < Y ? X : Y)
 
 Point* chull_graham(Point* polygon, size_t size, size_t* out_size){
+    if(size == 2 && (cmp(polygon[0].x, polygon[1].x)) && (cmp(polygon[0].y, polygon[1].y))){
+        *out_size = 1;
+        Point* output = malloc(sizeof(Point));
+        output[0] = polygon[0];
+        return output;
+    }
     if(size < 3){
         *out_size = size;
         Point* output = malloc(sizeof(Point)*size);
@@ -52,6 +58,12 @@ Point* chull_graham(Point* polygon, size_t size, size_t* out_size){
 }
 
 Point* chull_andrew(Point* polygon, size_t size, size_t* out_size){
+    if(size == 2 && (cmp(polygon[0].x, polygon[1].x)) && (cmp(polygon[0].y, polygon[1].y))){
+        *out_size = 1;
+        Point* output = malloc(sizeof(Point));
+        output[0] = polygon[0];
+        return output;
+    }
     if(size < 3){
         *out_size = size;
         Point* output = malloc(sizeof(Point)*size);
@@ -149,6 +161,12 @@ static void _find(Point *pts, int n, Point P, Point Q, Stack* hull, int depth){
 }
 
 Point* chull_quick(Point* polygon, size_t size, size_t* out_size){
+    if(size == 2 && (cmp(polygon[0].x, polygon[1].x)) && (cmp(polygon[0].y, polygon[1].y))){
+        *out_size = 1;
+        Point* output = malloc(sizeof(Point));
+        output[0] = polygon[0];
+        return output;
+    }
     if(size < 3){
         *out_size = size;
         Point* output = malloc(sizeof(Point)*size);
