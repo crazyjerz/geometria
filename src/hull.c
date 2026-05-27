@@ -11,7 +11,11 @@
 Point* chull_graham(Point* polygon, size_t size, size_t* out_size){
     if(size < 3){
         *out_size = size;
-        return polygon;
+        Point* output = malloc(sizeof(Point)*size);
+        for(int i = 0; i < size; i++){
+            output[i] = polygon[i];
+        }
+        return output;
     }
     int bindex = 0;
     for(int i = 1; i < size; i++){
@@ -50,7 +54,11 @@ Point* chull_graham(Point* polygon, size_t size, size_t* out_size){
 Point* chull_andrew(Point* polygon, size_t size, size_t* out_size){
     if(size < 3){
         *out_size = size;
-        return polygon;
+        Point* output = malloc(sizeof(Point)*size);
+        for(int i = 0; i < size; i++){
+            output[i] = polygon[i];
+        }
+        return output;
     }
     quicksort_lex(polygon, 0, size-1);
     if(polygon[0].x == polygon[size-1].x && polygon[0].y == polygon[size-1].y){
@@ -141,9 +149,13 @@ static void _find(Point *pts, int n, Point P, Point Q, Stack* hull, int depth){
 }
 
 Point* chull_quick(Point* polygon, size_t size, size_t* out_size){
-    if(size < 2){
+    if(size < 3){
         *out_size = size;
-        return polygon;
+        Point* output = malloc(sizeof(Point)*size);
+        for(int i = 0; i < size; i++){
+            output[i] = polygon[i];
+        }
+        return output;
     }
     Stack buffer;
     stack_init(&buffer, min(size+1, 1024));
