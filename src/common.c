@@ -25,7 +25,7 @@ int Orient(Point o, Point a, Point b){
     double bx = b.x - o.x, by = b.y - o.y;
     double c = ax * by - ay * bx;
     return (c > eps) - (c < -eps);
-}
+} 
 
 int OrientNum(Point o, Point a, Point b){
     double ax = a.x - o.x, ay = a.y - o.y;
@@ -39,24 +39,25 @@ static inline int lex(Point a, Point b){
     if(a.x > b.x) return 1;
     if(a.y < b.y) return -1;
     if(a.y > b.y) return 1;
+    return 0; // dla uspokojenia gcc
 }
 
 static inline Point medianThree(Point zero, Point a, Point b, Point c){
-    int g = Angle(zero, a, b) > 0;
-    if (g ^ Angle(zero, a, c) > 0) return a;
-    else if (g ^ Angle(zero, b, c) < 0) return b;
+    int g = (Angle(zero, a, b) > 0);
+    if ((g ^ (Angle(zero, a, c))) > 0) return a;
+    else if ((g ^ (Angle(zero, b, c))) < 0) return b;
     else return c;
 }
 
 static inline Point medianThree_lex(Point a, Point b, Point c){
     int g = lex(a, b) > 0;
-    if (g ^ lex(a, c) > 0) return a;
-    else if (g ^ lex(b, c) < 0) return b;
+    if ((g ^ (lex(a, c))) > 0) return a;
+    else if ((g ^ (lex(b, c))) < 0) return b;
     else return c;
 }
 
 static inline Point ninther(Point* A, Point zero, int l, int h){
-    medianThree(
+    return medianThree(
         zero,
         medianThree(zero, A[l],         A[l+(h-l)/6],   A[l+(h-l)/3]),
         medianThree(zero, A[l+(h-l)/3], A[l+(h-l)/2],   A[l+2*(h-l)/3]),
@@ -65,7 +66,7 @@ static inline Point ninther(Point* A, Point zero, int l, int h){
 }
 
 static inline Point ninther_lex(Point* A, int l, int h){
-    medianThree_lex(
+    return medianThree_lex(
         medianThree_lex(A[l],         A[l+(h-l)/6],   A[l+(h-l)/3]),
         medianThree_lex(A[l+(h-l)/3], A[l+(h-l)/2],   A[l+2*(h-l)/3]),
         medianThree_lex(A[l+2*(h-l)/3], A[l+5*(h-l)/6], A[h])
