@@ -27,7 +27,7 @@ int Orient(Point o, Point a, Point b){
     return (c > eps) - (c < -eps);
 } 
 
-int OrientNum(Point o, Point a, Point b){
+double OrientNum(Point o, Point a, Point b){
     double ax = a.x - o.x, ay = a.y - o.y;
     double bx = b.x - o.x, by = b.y - o.y;
     return ax * by - ay * bx;
