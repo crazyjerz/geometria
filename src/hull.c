@@ -9,7 +9,7 @@
 #define min(X, Y) (X < Y ? X : Y)
 
 Point* chull_graham(Point* polygon, size_t size, size_t* out_size){
-    if(size == 2 && (cmp(polygon[0].x, polygon[1].x)) && (cmp(polygon[0].y, polygon[1].y))){
+    if(size == 2 && (dup(polygon[0], polygon[1]))){
         *out_size = 1;
         Point* output = malloc(sizeof(Point));
         output[0] = polygon[0];
@@ -35,30 +35,27 @@ Point* chull_graham(Point* polygon, size_t size, size_t* out_size){
     Stack stack;
     stack_init(&stack, size+1);
     quicksort(polygon, polygon[0], 1, size-1);
-    if(polygon[1].x == polygon[size-1].x && polygon[1].y == polygon[size-1].y){
-        Point* output = malloc(sizeof(Point)*2);
-        output[0] = polygon[0];
-        output[1] = polygon[1];
-        *out_size = 2;
-        return output;
-    }
     stack_push(&stack, polygon[0]);
-    stack_push(&stack, polygon[1]);
-    for(int i = 2; i < size; i++){
-        if(dup(polygon[i-1], polygon[i])) continue;
-        while(stack.size >= 2){
-            if(Orient(stack_subpeek(&stack), stack_peek(&stack), polygon[i]) <= 0){
-                stack_pop(&stack);
-            }else break;
+    int ini = 1;
+    while(ini < size && (dup(polygon[0], polygon[ini]))) ini++;
+    if(ini != size){
+        stack_push(&stack, polygon[ini]); // edge case management
+        for(int i = ini+1; i < size; i++){
+            if(dup(polygon[i-1], polygon[i])) continue;
+            while(stack.size >= 2){
+                if(Orient(stack_subpeek(&stack), stack_peek(&stack), polygon[i]) <= 0){
+                    stack_pop(&stack);
+                }else break;
+            }
+            stack_push(&stack, polygon[i]);
         }
-        stack_push(&stack, polygon[i]);
     }
     *out_size = stack.size;
     return stack.data;
 }
 
 Point* chull_andrew(Point* polygon, size_t size, size_t* out_size){
-    if(size == 2 && (cmp(polygon[0].x, polygon[1].x)) && (cmp(polygon[0].y, polygon[1].y))){
+    if(size == 2 && (dup(polygon[0], polygon[1]))){
         *out_size = 1;
         Point* output = malloc(sizeof(Point));
         output[0] = polygon[0];
@@ -161,7 +158,7 @@ static void _find(Point *pts, int n, Point P, Point Q, Stack* hull, int depth){
 }
 
 Point* chull_quick(Point* polygon, size_t size, size_t* out_size){
-    if(size == 2 && (cmp(polygon[0].x, polygon[1].x)) && (cmp(polygon[0].y, polygon[1].y))){
+    if(size == 2 && (dup(polygon[0], polygon[1]))){
         *out_size = 1;
         Point* output = malloc(sizeof(Point));
         output[0] = polygon[0];
@@ -221,25 +218,4 @@ Point* chull_quick(Point* polygon, size_t size, size_t* out_size){
     Point* out = chull_andrew(buffer.data, buffer.size, out_size);
     stack_destroy(&buffer);
     return out;
-}
-
-int main(void){
-    Point* polygon = malloc(20000000*sizeof(Point));
-    for(int i = 0; i < 10000000; i++){
-        polygon[i].x = i%8;
-        polygon[i].y = i%11;
-        if((i%8 == 0 && i%11 == 0) || (i%8 == 7 && i%11 == 10) || (i%8 == 0 && i%11 == 10) || (i%8 == 7 && i%11 == 0)){
-            polygon[i].x = 4;
-            polygon[i].y = 4;
-        }
-    }
-    for(int i = 0; i < 10000000; i++){
-        polygon[10000000+i].x = 1-((double)i)/10000000;
-        polygon[10000000+i].y = ((double)i)/10000000;
-    }
-    size_t out;
-    Point* res = chull_quick(polygon, 20000000, &out);
-    for(int i = 0; i < out; i++){
-        printf("(%.2f, %.2f)", res[i].x, res[i].y);
-    }
 }
