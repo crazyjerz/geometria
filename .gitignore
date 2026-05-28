@@ -11,3 +11,4 @@ geometria.Rproj
 .Rcheck/*
 *.log
 .RDataTmp
+.RDataTmp1
