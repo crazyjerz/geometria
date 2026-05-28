@@ -10,3 +10,4 @@ geometria.Rproj
 .RData
 .Rcheck/*
 *.log
+.RDataTmp
