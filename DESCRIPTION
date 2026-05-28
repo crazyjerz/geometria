@@ -1,16 +1,17 @@
 Package: geometria
-Type: 
+Type: Package
 Title: Computational Geometry for R
 Version: 0.0.2
-Authors@R: c(
-    person(
-      "Jerzy", "Adrjan",
-      email = "01199216@pw.edu.pl",
-      role = c("aut", "cre")
+Authors@R:
+    c(
+      person(
+        "Jerzy", "Adrjan",
+        email = "01199216@pw.edu.pl",
+        role = c("aut", "cre")
+      )
     )
-  )
 Description: WIP
-License: WIP
+License: MIT
 Encoding: UTF-8
 LazyData: true
 Suggests:

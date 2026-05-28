@@ -18,7 +18,8 @@ SEXP chull(SEXP X, SEXP Y, SEXP alg, SEXP restype){
     double* px = REAL(X);
     double* py = REAL(Y);
 
-    for(int i = 0; i < XLENGTH(Y); i++){
+    #pragma omp parallel for if(n > 100000)
+    for(int i = 0; i < n; i++){
         in[i].x = px[i];
         in[i].y = py[i];
         in[i].idx = i+1;

@@ -4,6 +4,7 @@
 #include"point.h"
 #include<omp.h>
 #include<math.h>
+#include<string.h>
 
 #define cmp(X, Y) (fabs(X-Y)<eps)
 #define min(X, Y) (X < Y ? X : Y)
@@ -109,15 +110,20 @@ Point* chull_andrew(Point* polygon, size_t size, size_t* out_size){
 
 int partition(Point *pts, int n, Point P, Point Q) {
     int i = 0;
-    for(int j = 0; j < n; j++){
-        if(OrientNum(P, Q, pts[j]) > 0){
-            Point tmp = pts[i];
-            pts[i] = pts[j];
-            pts[j] = tmp;
-            i++;
-        }
+    int j = n-1;
+
+    while(1){
+        while (i <= j && Orient(P, Q, pts[i]) > 0)   i++;
+        while (i <= j && Orient(P, Q, pts[j]) <= 0)  j--;
+        if (i >= j) return i;
+
+        Point tmp = pts[i];
+        pts[i] = pts[j];
+        pts[j] = tmp;
+
+        i++;
+        j--;
     }
-    return i;
 }
 
 static void _find(Point *pts, int n, Point P, Point Q, Stack* hull, int depth){
@@ -126,12 +132,14 @@ static void _find(Point *pts, int n, Point P, Point Q, Stack* hull, int depth){
     for(int i = 1; i < n; i++) 
         if(OrientNum(P, Q, pts[i]) > OrientNum(P, Q, pts[ci])) ci = i;
     Point C = pts[ci];
-    if(OrientNum(P, Q, C) < -eps) return;
+    if(Orient(P, Q, C) < 0) return;
     stack_push(hull, C);
     pts[ci] = pts[n-1];
     n--;
     int s1 = partition(pts, n, P, C);
     int s2 = partition(pts + s1, n - s1, C, Q);
+    if(s1 == 0 && s2 == 0) return;
+    //if(depth > -2) fprintf(stderr, "depth=%d s1=%d s2=%d THREAD=%d\n", depth, s1, s2, omp_get_thread_num());
 
     if(depth <= 0){
         _find(pts,      s1, P, C, hull, depth-1);
@@ -158,6 +166,7 @@ static void _find(Point *pts, int n, Point P, Point Q, Stack* hull, int depth){
 }
 
 Point* chull_quick(Point* polygon, size_t size, size_t* out_size){
+    fprintf(stderr, "1\n");
     if(size == 2 && (dup(polygon[0], polygon[1]))){
         *out_size = 1;
         Point* output = malloc(sizeof(Point));
@@ -172,14 +181,30 @@ Point* chull_quick(Point* polygon, size_t size, size_t* out_size){
         }
         return output;
     }
+    fprintf(stderr, "2\n");
     Stack buffer;
     stack_init(&buffer, min(size+1, 1024));
+    fprintf(stderr, "3\n");
+    #pragma omp declare reduction(minx : Point : \
+    omp_out = (omp_in.x < omp_out.x) ? omp_in : omp_out) \
+    initializer(omp_priv = (Point){1e300, 1e300, 0})
 
-    int ai = 0, bi = 0;
-    for (int i = 1; i < size; i++) {
-        if (polygon[i].x < polygon[ai].x) ai = i;
-        if (polygon[i].x > polygon[bi].x) bi = i;
+    #pragma omp declare reduction(maxx : Point : \
+    omp_out = (omp_in.x > omp_out.x) ? omp_in : omp_out) \
+    initializer(omp_priv = (Point){-1e300, -1e300, 0})
+    fprintf(stderr, "4\n");
+    Point rmin = polygon[0], rmax = polygon[0];
+
+    #pragma omp parallel for reduction(minx:rmin) reduction(maxx:rmax)
+    for(int i = 1; i < size; i++){
+        Point p = polygon[i];
+        if(p.x < rmin.x) rmin = p;
+        if(p.x > rmax.x) rmax = p;
     }
+    fprintf(stderr, "5\n");
+    int ai = rmin.idx;
+    int bi = rmax.idx;
+
     Point A = polygon[ai], B = polygon[bi];
     stack_push(&buffer, A);
     stack_push(&buffer, B);
@@ -188,34 +213,35 @@ Point* chull_quick(Point* polygon, size_t size, size_t* out_size){
     if(!bi) bi = ai;
     polygon[bi] = polygon[1];
     polygon[1] = B;
-
+    fprintf(stderr, "6\n");
     int s1 = partition(polygon + 2, size - 2, A, B);
     int s2 = partition(polygon + 2 + s1, size - s1 - 2, B, A);
-
+    fprintf(stderr, "7\n");
     int depth = (int)log2(omp_get_max_threads());
 
     Stack local1, local2;
     stack_init(&local1, s1 + 1);
     stack_init(&local2, s2 + 1);
-
+    fprintf(stderr, "8\n");
     #pragma omp parallel
     #pragma omp single
     {
         #pragma omp task firstprivate(s1, A, B, depth) shared(local1)
-        _find(polygon + 2,        s1, A, B, &local1, depth - 1);
+        _find(polygon + 2,        s1, A, B, &local1, depth);
 
         #pragma omp task firstprivate(s1, s2, B, A, depth) shared(local2)
-        _find(polygon + 2 + s1,   s2, B, A, &local2, depth - 1);
+        _find(polygon + 2 + s1,   s2, B, A, &local2, depth);
 
         #pragma omp taskwait
     }
-
+    fprintf(stderr, "9\n");
     for(int i = 0; i < local1.size; i++) stack_push(&buffer, local1.data[i]);
     for(int i = 0; i < local2.size; i++) stack_push(&buffer, local2.data[i]);
     stack_destroy(&local1);
     stack_destroy(&local2);
-
+    fprintf(stderr, "10\n");
     Point* out = chull_andrew(buffer.data, buffer.size, out_size);
     stack_destroy(&buffer);
+    fprintf(stderr, "11\n");
     return out;
 }
