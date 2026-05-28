@@ -186,12 +186,26 @@ Point* chull_quick(Point* polygon, size_t size, size_t* out_size){
     }
     Stack buffer;
     stack_init(&buffer, min(size+1, 1024));
-    int ai = 0, bi = 0;
-    for(int i = 0; i < size; i++){
-        if(polygon[i].x < polygon[ai].x) ai = i;
-        if(polygon[i].x > polygon[bi].x) bi = i;
+    Point A = polygon[0];
+    Point B = polygon[0];
+
+    #pragma omp declare reduction(minpt : Point : \
+        omp_out = (omp_in.x < omp_out.x || \
+                (omp_in.x == omp_out.x && omp_in.y < omp_out.y)) ? omp_in : omp_out) \
+        initializer(omp_priv = omp_orig)
+
+    #pragma omp declare reduction(maxpt : Point : \
+        omp_out = (omp_in.x > omp_out.x || \
+                (omp_in.x == omp_out.x && omp_in.y > omp_out.y)) ? omp_in : omp_out) \
+        initializer(omp_priv = omp_orig)
+
+    #pragma omp parallel for reduction(minpt:A) reduction(maxpt:B) if(n > 100000)
+    for (int i = 1; i < size; i++) {
+        Point p = polygon[i];
+        A = (p.x < A.x || (p.x == A.x && p.y < A.y)) ? p : A;
+        B = (p.x > B.x || (p.x == B.x && p.y > B.y)) ? p : B;
     }
-    Point A = polygon[ai], B = polygon[bi];
+    int ai = A.idx, bi = B.idx;
     stack_push(&buffer, A);
     stack_push(&buffer, B);
     polygon[ai] = polygon[0];
@@ -208,7 +222,7 @@ Point* chull_quick(Point* polygon, size_t size, size_t* out_size){
     if(size <= 1e5){
         _find(polygon + 2,        s1, A, B, &buffer, -1);
         _find(polygon + 2 + s1,   s2 - 2, B, A, &buffer, -1);
-        //fprintf(stderr, "%d\n", buffer.size);
+        fprintf(stderr, "%d\n", buffer.size);
         Point* out = chull_andrew(buffer.data, buffer.size, out_size);
         stack_destroy(&buffer);
         return out;
