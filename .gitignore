@@ -8,3 +8,5 @@ geometria.Rproj
 *.o
 .vscode/*
 .RData
+.Rcheck/*
+*.log
