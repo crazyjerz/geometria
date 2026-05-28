@@ -199,7 +199,7 @@ Point* chull_quick(Point* polygon, size_t size, size_t* out_size){
                 (omp_in.x == omp_out.x && omp_in.y > omp_out.y)) ? omp_in : omp_out) \
         initializer(omp_priv = omp_orig)
 
-    #pragma omp parallel for reduction(minpt:A) reduction(maxpt:B) if(n > 100000)
+    #pragma omp parallel for reduction(minpt:A) reduction(maxpt:B) if(size > 100000)
     for (int i = 1; i < size; i++) {
         Point p = polygon[i];
         A = (p.x < A.x || (p.x == A.x && p.y < A.y)) ? p : A;
