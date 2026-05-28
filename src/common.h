@@ -4,7 +4,7 @@
 #include"point.h"
 
 extern int Orient(Point o, Point a, Point b);
-extern int OrientNum(Point o, Point a, Point b);
+extern double OrientNum(Point o, Point a, Point b);
 extern double ScalarProduct(Point a, Point b);
 extern int stack_empty(Stack* s);
 extern int stack_init(Stack* s, size_t capacity);
