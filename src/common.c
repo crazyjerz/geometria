@@ -34,7 +34,7 @@ double OrientNum(Point o, Point a, Point b){
 }
 
 static inline int lex(Point a, Point b){
-    if(fabs(a.x - b.x) < eps && fabs(a.y - b.y) < eps) return 0;
+    if(dup(a, b)) return 0;
     if(a.x < b.x) return -1;
     if(a.x > b.x) return 1;
     if(a.y < b.y) return -1;
