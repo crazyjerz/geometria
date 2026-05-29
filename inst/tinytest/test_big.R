@@ -15,3 +15,9 @@ run(rep(0, 1e8), rep(0, 1e8), 3)
 run(rcauchy(1e4), rcauchy(1e4), 1)
 run(rcauchy(1e6), rcauchy(1e6), 2)
 run(rcauchy(1e8), rcauchy(1e8), 3)
+
+# test 4: microscopic hull coordinates
+run(runif(1e6)/1e6, runif(1e6)/1e6)
+
+# test 5: big hull coordinates
+run(runif(1e6)*1e12, runif(1e6)*1e12)
