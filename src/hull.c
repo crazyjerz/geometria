@@ -142,7 +142,7 @@ static void _find(Point *pts, int n, Point P, Point Q, Stack* hull, int depth){
     int s1 = partition(pts, n, P, C);
     int s2 = partition(pts + s1, n - s1, C, Q);
     if(s1 == 0 && s2 == 0) return;
-    //printf(stderr, "%.2f (%.2f %.2f) (%.2f %.2f) (%.2f %.2f)", OrientNum(P, C, Q), P.x, P.y, Q.x, Q.y, C.x, C.y);
+    //fprintf(stderr, "%.2f (%.2f %.2f) (%.2f %.2f) (%.2f %.2f)", OrientNum(P, C, Q), P.x, P.y, Q.x, Q.y, C.x, C.y);
     //fprintf(stderr, "%d %d %d\n", s1, s2, n);
 
     if(depth <= 0){
@@ -208,10 +208,10 @@ Point* chull_quick(Point* polygon, size_t size, size_t* out_size){
     int ai = A.idx, bi = B.idx;
     stack_push(&buffer, A);
     stack_push(&buffer, B);
-    polygon[ai] = polygon[0];
+    polygon[ai-1] = polygon[0];
     polygon[0] = A;
     if(!bi) bi = ai;
-    polygon[bi] = polygon[1];
+    polygon[bi-1] = polygon[1];
     polygon[1] = B;
 
     int s1 = partition(polygon + 2, size - 2, A, B);
@@ -222,7 +222,7 @@ Point* chull_quick(Point* polygon, size_t size, size_t* out_size){
     if(size <= 1e5){
         _find(polygon + 2,        s1, A, B, &buffer, -1);
         _find(polygon + 2 + s1,   s2 - 2, B, A, &buffer, -1);
-        fprintf(stderr, "%d\n", buffer.size);
+        //fprintf(stderr, "%d\n", buffer.size);
         Point* out = chull_andrew(buffer.data, buffer.size, out_size);
         stack_destroy(&buffer);
         return out;

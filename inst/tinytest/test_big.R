@@ -21,3 +21,9 @@ run(runif(1e6)/1e6, runif(1e6)/1e6)
 
 # test 5: big hull coordinates
 run(runif(1e6)*1e12, runif(1e6)*1e12)
+
+# test 6: chull of chull
+x <- runif(1e7)
+y <- runif(1e7)
+c <- chull(x, y)
+run(x[c], y[c])

@@ -154,7 +154,7 @@ static void insertionsort_lex(Point* A, int lo, int hi){
 
 static void quicksort_parallel(Point* A, Point zero, int lo, int hi, int depth){
     if(lo >= hi) return;
-    if (hi - lo <= INSERTION_THRESHOLD) {
+    if (hi - lo <= INSERTION_THRESHOLD){
         insertionsort(A, zero, lo, hi);
         return;
     }
