@@ -1,7 +1,7 @@
 Package: geometria
 Type: Package
-Title: Computational Geometry for R
-Version: 0.0.2
+Title: Convex Hulls for R
+Version: 0.1.0
 Authors@R:
     c(
       person(
@@ -10,7 +10,7 @@ Authors@R:
         role = c("aut", "cre")
       )
     )
-Description: WIP
+Description: Package including methods to compute the convex hull of a set of points in 2D space.
 License: MIT
 Encoding: UTF-8
 LazyData: true
