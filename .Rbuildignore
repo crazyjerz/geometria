@@ -1,0 +1,8 @@
+^\.vscode$
+^\.lintr\.R$
+^\.RData.*$
+^Makefile$
+^src/.*\.exe$
+^\.Rcheck/.*$
+^\.Rproj\.user/.*$
+
