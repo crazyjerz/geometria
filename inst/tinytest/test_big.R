@@ -2,28 +2,28 @@ library(tinytest)
 library(geometria)
 
 # test 1: triangle with many collinearities
-run(c((0:1e4)/1e4, rep(1, 1e4+1), (0:1e4)/1e4), c(rep(0, 1e4+1), (0:1e4)/1e4, (0:1e4)/1e4), 1)
-run(c((0:1e5)/1e5, rep(1, 1e5+1), (0:1e5)/1e5), c(rep(0, 1e5+1), (0:1e5)/1e5, (0:1e5)/1e5), 2)
-run(c((0:1e7)/1e7, rep(1, 1e7+1), (0:1e7)/1e7), c(rep(0, 1e7+1), (0:1e7)/1e7, (0:1e7)/1e7), 3)
+geometria:::run(c((0:1e4)/1e4, rep(1, 1e4+1), (0:1e4)/1e4), c(rep(0, 1e4+1), (0:1e4)/1e4, (0:1e4)/1e4), 1)
+geometria:::run(c((0:1e5)/1e5, rep(1, 1e5+1), (0:1e5)/1e5), c(rep(0, 1e5+1), (0:1e5)/1e5, (0:1e5)/1e5), 2)
+geometria:::run(c((0:1e7)/1e7, rep(1, 1e7+1), (0:1e7)/1e7), c(rep(0, 1e7+1), (0:1e7)/1e7, (0:1e7)/1e7), 3)
 
 # test 2: large number of duplicated points
-run(rep(0, 1e4), rep(0, 1e4), 1)
-run(rep(0, 1e6), rep(0, 1e6), 2)
-run(rep(0, 1e8), rep(0, 1e8), 3)
+geometria:::run(rep(0, 1e4), rep(0, 1e4), 1)
+geometria:::run(rep(0, 1e6), rep(0, 1e6), 2)
+geometria:::run(rep(0, 1e8), rep(0, 1e8), 3)
 
 # test 3: large number of points with a very small hull
-run(rcauchy(1e4), rcauchy(1e4), 1)
-run(rcauchy(1e6), rcauchy(1e6), 2)
-run(rcauchy(1e8), rcauchy(1e8), 3)
+geometria:::run(rcauchy(1e4), rcauchy(1e4), 1)
+geometria:::run(rcauchy(1e6), rcauchy(1e6), 2)
+geometria:::run(rcauchy(1e8), rcauchy(1e8), 3)
 
 # test 4: microscopic hull coordinates
-run(runif(1e6)/1e6, runif(1e6)/1e6)
+geometria:::run(runif(1e6)/1e6, runif(1e6)/1e6)
 
 # test 5: big hull coordinates
-run(runif(1e6)*1e12, runif(1e6)*1e12)
+geometria:::run(runif(1e6)*1e12, runif(1e6)*1e12)
 
 # test 6: chull of chull
 x <- runif(1e7)
 y <- runif(1e7)
 c <- chull(x, y)
-run(x[c], y[c])
+geometria:::run(x[c], y[c])

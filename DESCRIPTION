@@ -10,8 +10,9 @@ Authors@R:
         role = c("aut", "cre")
     )
 Description: Package including methods to compute the convex hull of a set of points in 2D space.
-License: MIT
+License: LICENSE
 Encoding: UTF-8
 LazyData: true
-Suggests:
+Depends:
     tinytest
+RoxygenNote: 7.3.3
