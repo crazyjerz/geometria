@@ -12,3 +12,4 @@ geometria.Rproj
 *.log
 .RDataTmp
 .RDataTmp1
+\.lintr.R
