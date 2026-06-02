@@ -13,3 +13,5 @@ geometria.Rproj
 .RDataTmp
 .RDataTmp1
 \.lintr.R
+*.tar.gz
+geometria.Rcheck/*

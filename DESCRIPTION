@@ -2,13 +2,12 @@ Package: geometria
 Type: Package
 Title: Convex Hulls for R
 Version: 0.1.0
-Authors@R:
-    c(
-      person(
-        "Jerzy", "Adrjan",
+Authors@R: 
+    person(
+        given = "Jerzy",
+        family = "Adrjan",
         email = "01199216@pw.edu.pl",
         role = c("aut", "cre")
-      )
     )
 Description: Package including methods to compute the convex hull of a set of points in 2D space.
 License: MIT
