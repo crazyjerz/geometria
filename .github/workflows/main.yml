@@ -40,4 +40,4 @@ jobs:
 
       - name: Run tests (tinytest)
         run: |
-        Rscript -e "tinytest::test_package('geometria')"
+          Rscript -e 'tinytest::test_package("geometria")'
