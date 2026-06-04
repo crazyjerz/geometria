@@ -1,9 +1,3 @@
-- name: Install OpenMP (macOS)
-  if: runner.os == 'macOS'
-  run: |
-    brew install libomp
-    echo "PKG_CFLAGS=-Xclang -fopenmp -I$(brew --prefix libomp)/include" >> src/Makevars
-    echo "PKG_LIBS=-L$(brew --prefix libomp)/lib -lomp" >> src/MakevarsPKG_CFLAGS = $(SHLIB_OPENMP_CFLAGS)
-    
+PKG_CFLAGS = $(SHLIB_OPENMP_CFLAGS)
 PKG_CXXFLAGS = $(SHLIB_OPENMP_CFLAGS)
 PKG_LIBS = $(SHLIB_OPENMP_CFLAGS)
