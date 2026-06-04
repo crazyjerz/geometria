@@ -37,8 +37,8 @@ jobs:
       - name: Set OpenMP env (macOS)
         if: runner.os == 'macOS'
         run: |
-          echo "CPPFLAGS=-Xpreprocessor -fopenmp" >> $GITHUB_ENV
-          echo "LDFLAGS=-lomp" >> $GITHUB_ENV
+          echo "CPPFLAGS=-I/opt/homebrew/opt/libomp/include -Xpreprocessor -fopenmp" >> $GITHUB_ENV
+          echo "LDFLAGS=-L/opt/homebrew/opt/libomp/lib -lomp" >> $GITHUB_ENV
 
       - uses: r-lib/actions/check-r-package@v2
         with:
