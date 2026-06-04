@@ -8,5 +8,4 @@
 #' @useDynLib geometria, .registration = TRUE
 #' @importFrom stats runif rcauchy
 #' @importFrom grDevices chull
-#' @importFrom tinytest expect_true
 NULL
