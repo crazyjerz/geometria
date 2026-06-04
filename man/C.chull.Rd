@@ -4,24 +4,32 @@
 \alias{C.chull}
 \title{Convex hull}
 \usage{
-C.chull(x, y, algorithm = "andrew", mode = "values")
+C.chull(x, y, algorithm = "quick", mode = "indices")
 }
 \arguments{
-\item{x}{Numeric.}
+\item{x}{Numeric vector of values corresponding to the points’ X coordinate.}
 
-\item{y}{Numeric.}
+\item{y}{Numeric vector of values corresponding to the points’ Y coordinate.}
 
-\item{algorithm}{String.}
+\item{algorithm}{String determining the algorithm used to compute the convex hull. Available values are: c("graham", "andrew", "quick").}
 
-\item{mode}{String.}
+\item{mode}{String determining the return values of the function. Available values are: c("values", "indices")}
 }
 \value{
-Numeric.
+If mode = "values", returns a 2×length(x) matrix containing the coordinates of points forming the convex hull.
+If mode = "indices", returns the indices of these points.
 }
 \description{
 Calculates convex hull.
 }
 \examples{
-C.chull(c(0, 0, 1), c(0, 1, 0))
+x <- runif(1000)
+y <- runif(1000)
+
+C.chull(x, y, "graham", "values")
+
+c <- C.chull(x, y)
+
+C.chull(x[c], y[c]) 
 
 }

@@ -5,18 +5,26 @@ modes <- c("values", "indices")
 #'
 #' Calculates convex hull.
 #'
-#' @param x Numeric.
-#' @param y Numeric.
-#' @param algorithm String.
-#' @param mode String.
+#' @param x Numeric vector of values corresponding to the points’ X coordinate.
+#' @param y Numeric vector of values corresponding to the points’ Y coordinate.
+#' @param algorithm String determining the algorithm used to compute the convex hull. Available values are: c("graham", "andrew", "quick").
+#' @param mode String determining the return values of the function. Available values are: c("values", "indices")
 #'
-#' @return Numeric.
+#' @return If mode = "values", returns a 2×length(x) matrix containing the coordinates of points forming the convex hull.
+#' If mode = "indices", returns the indices of these points.
 #'
 #' @examples
-#' C.chull(c(0, 0, 1), c(0, 1, 0))
+#' x <- runif(1000)
+#' y <- runif(1000)
+#' 
+#' C.chull(x, y, "graham", "values")
+#' 
+#' c <- C.chull(x, y)
+#' 
+#' C.chull(x[c], y[c]) 
 #'
 #' @export
-C.chull <- function(x, y, algorithm = "andrew", mode = "values") {
+C.chull <- function(x, y, algorithm = "quick", mode = "indices"){
     alg <- match(algorithm, algorithms)
     md <- match(mode, modes)
     if(is.na(alg)) stop("Erroneous algorithm")
