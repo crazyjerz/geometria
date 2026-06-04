@@ -2,7 +2,12 @@
 #include<math.h>
 #include<stdio.h>
 #include"point.h"
-#include<omp.h>
+#ifdef _OPENMP
+#include <omp.h>
+#else
+static inline int omp_get_max_threads(void) { return 1; }
+static inline int omp_get_thread_num(void) { return 0; }
+#endif
 #define INSERTION_THRESHOLD 16
 #define PARALLEL_THRESHOLD 10000
 #define MAX_DEPTH_MULTIPLIER 2
