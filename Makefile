@@ -3,4 +3,3 @@ all:
 	R CMD build .
 	Rscript -e "f <- list.files(pattern='geometria_.*\\.tar\\.gz'); system(paste('R CMD check --no-manual', f))"
 	R CMD INSTALL .
-	Rscript -e 'tinytest::test_package("geometria")'

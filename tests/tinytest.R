@@ -1,0 +1,1 @@
+tinytest::run_test_dir(system.file("tinytest", package = "geometria"))
