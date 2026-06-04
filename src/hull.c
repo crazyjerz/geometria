@@ -208,11 +208,15 @@ Point* chull_quick(Point* polygon, size_t size, size_t* out_size){
     int ai = A.idx, bi = B.idx;
     stack_push(&buffer, A);
     stack_push(&buffer, B);
-    polygon[ai-1] = polygon[0];
-    polygon[0] = A;
-    if(!bi) bi = ai;
-    polygon[bi-1] = polygon[1];
-    polygon[1] = B;
+    if(!(bi-1)){
+        polygon[ai-1] = polygon[1];
+        polygon[1] = A;
+    }else{
+        polygon[ai-1] = polygon[0];
+        polygon[0] = A;
+        polygon[bi-1] = polygon[1];
+        polygon[1] = B;
+    }
 
     int s1 = partition(polygon + 2, size - 2, A, B);
 
