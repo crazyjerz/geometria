@@ -23,6 +23,8 @@ If mode = "indices", returns the indices of these points.
 Calculates convex hull.
 }
 \examples{
+set.seed(123)
+
 x <- runif(1000)
 y <- runif(1000)
 

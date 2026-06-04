@@ -2,12 +2,7 @@
 #include<stdlib.h>
 #include"common.h"
 #include"point.h"
-#ifdef _OPENMP
-#include <omp.h>
-#else
-static inline int omp_get_max_threads(void) { return 1; }
-static inline int omp_get_thread_num(void) { return 0; }
-#endif
+#include<omp.h>
 #include<math.h>
 #include<string.h>
 

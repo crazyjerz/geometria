@@ -14,6 +14,8 @@ modes <- c("values", "indices")
 #' If mode = "indices", returns the indices of these points.
 #'
 #' @examples
+#' set.seed(123)
+#' 
 #' x <- runif(1000)
 #' y <- runif(1000)
 #' 
