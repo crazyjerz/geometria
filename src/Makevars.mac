@@ -1,0 +1,2 @@
+PKG_CFLAGS = $(SHLIB_OPENMP_CFLAGS) -Xpreprocessor -fopenmp -I/opt/homebrew/opt/libomp/include
+PKG_LIBS   = $(SHLIB_OPENMP_CFLAGS) -lomp -L/opt/homebrew/opt/libomp/lib
