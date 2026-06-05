@@ -2,7 +2,12 @@
 #include<stdlib.h>
 #include"common.h"
 #include"point.h"
-#include<omp.h>
+#ifdef _OPENMP
+#include <omp.h>
+#define OMP_THREADS omp_get_max_threads()
+#else
+#define OMP_THREADS 1
+#endif
 #include<math.h>
 #include<string.h>
 
@@ -220,8 +225,8 @@ Point* chull_quick(Point* polygon, size_t size, size_t* out_size){
 
     int s1 = partition(polygon + 2, size - 2, A, B);
 
-    int depth1 = (int)log2(omp_get_max_threads());
-    int depth2 = (int)(log2(omp_get_max_threads())+log2(4.0/3.0));
+    int depth1 = (int)log2(OMP_THREADS);
+    int depth2 = (int)(log2(OMP_THREADS)+log2(4.0/3.0));
     int s2 = size - s1;
     if(size <= 1e5){
         _find(polygon + 2,        s1, A, B, &buffer, -1);

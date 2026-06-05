@@ -2,7 +2,12 @@
 #include<math.h>
 #include<stdio.h>
 #include"point.h"
-#include<omp.h>
+#ifdef _OPENMP
+#include <omp.h>
+#define OMP_THREADS omp_get_max_threads()
+#else
+#define OMP_THREADS 1
+#endif
 #define INSERTION_THRESHOLD 16
 #define PARALLEL_THRESHOLD 10000
 #define MAX_DEPTH_MULTIPLIER 2
@@ -219,7 +224,7 @@ static void quicksort_parallel_lex(Point* A, int lo, int hi, int depth){
 }
 
 void quicksort(Point* A, Point zero, int lo, int hi){
-    int depth = (int)log2(omp_get_max_threads());
+    int depth = (int)log2(OMP_THREADS);
     #pragma omp parallel
     #pragma omp single
     {
@@ -231,7 +236,7 @@ void quicksort(Point* A, Point zero, int lo, int hi){
 }
 
 void quicksort_lex(Point* A, int lo, int hi){
-    int depth = (int)log2(omp_get_max_threads());
+    int depth = (int)log2(OMP_THREADS);
     #pragma omp parallel
     #pragma omp single
     {

@@ -29,6 +29,10 @@ jobs:
         if: runner.os == 'macOS'
         run: |
           brew install libomp
+          mkdir -p ~/.R
+          LIBOMP=$(brew --prefix libomp)
+          echo "PKG_CFLAGS=-Xclang -fopenmp -I${LIBOMP}/include" >> ~/.R/Makevars
+          echo "PKG_LIBS=-L${LIBOMP}/lib -lomp" >> ~/.R/Makevars
 
       - uses: r-lib/actions/setup-r-dependencies@v2
         with:
