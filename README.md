@@ -5,6 +5,7 @@
 ### Installation
 
 The package can be installed along with all tests being run by executing the `make` command with `geometria` as the working directory.
-OpenMP is required for the package to compile and work properly.
+OpenMP is required for the package to compile and work properly. 
+Note: If on MacOS, OpenMP is not available with clang and must be installed separately.
 
 Alternatively, a [https://github.com/crazyjerz/geometria/releases release] may be used and installed via the `R CMD INSTALL geometria.*.tar.gz` command.
