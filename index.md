@@ -11,6 +11,6 @@ required for the package to compile and work properly. Note: If on
 MacOS, OpenMP is not available with clang and must be installed
 separately.
 
-Alternatively, a \[<https://github.com/crazyjerz/geometria/releases>
-release\] may be used and installed via the
-`R CMD INSTALL geometria.*.tar.gz` command.
+Alternatively, a
+[release](https://github.com/crazyjerz/geometria/releases) may be used
+and installed via the `R CMD INSTALL geometria.*.tar.gz` command.
