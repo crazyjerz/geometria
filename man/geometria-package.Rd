@@ -8,6 +8,13 @@
 \description{
 Package including methods to compute the convex hull of a set of points in 2D space.
 }
+\seealso{
+Useful links:
+\itemize{
+  \item \url{https://crazyjerz.github.io/geometria/}
+}
+
+}
 \author{
 \strong{Maintainer}: Jerzy Adrjan \email{01199216@pw.edu.pl}
 

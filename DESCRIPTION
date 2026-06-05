@@ -16,3 +16,4 @@ LazyData: true
 Suggests:
     tinytest
 RoxygenNote: 7.3.3
+URL: https://crazyjerz.github.io/geometria/
