@@ -15,6 +15,9 @@
 #define min(X, Y) (X < Y ? X : Y)
 
 Point* chull_graham(Point* polygon, size_t size, size_t* out_size){
+    #ifdef _OPENMP
+        fprintf(stderr, "PAFY\n");
+    #endif
     if(size == 2 && (dup(polygon[0], polygon[1]))){
         *out_size = 1;
         Point* output = malloc(sizeof(Point));

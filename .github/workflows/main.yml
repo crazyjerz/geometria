@@ -34,6 +34,21 @@ jobs:
           echo "PKG_CFLAGS=-Xclang -fopenmp -I${LIBOMP}/include" >> ~/.R/Makevars
           echo "PKG_LIBS=-L${LIBOMP}/lib -lomp" >> ~/.R/Makevars
 
+      - name: debug
+        if: runner.os == 'macOS'  
+        run: |
+          Rscript -e "
+          library(geometria)
+          set.seed(123)
+          for(n in c(10, 50, 100, 200, 500, 1000)){
+            cat('n =', n, '... ')
+            tryCatch(
+              { C.chull(runif(n), runif(n), 'graham', 'values'); cat('OK\n') },
+              error = function(e) cat('FAIL:', conditionMessage(e), '\n')
+            )
+          }
+          "
+
       - uses: r-lib/actions/setup-r-dependencies@v2
         with:
           extra-packages: any::rcmdcheck, any::tinytest, any::roxygen2
