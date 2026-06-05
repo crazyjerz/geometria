@@ -18,12 +18,21 @@ SEXP chull(SEXP X, SEXP Y, SEXP alg, SEXP restype){
     double* px = REAL(X);
     double* py = REAL(Y);
 
-    #pragma omp parallel for if(n > 100000)
+    int na = 0;
+    #pragma omp parallel for if(n > 100000) shared(na)
     for(int i = 0; i < n; i++){
+        if(na) continue;
+        if(ISNA(px[i]) || ISNA(py[i])){
+            #pragma omp critical
+            { na = 1; }
+            continue;
+        }
         in[i].x = px[i];
         in[i].y = py[i];
         in[i].idx = i+1;
     }
+
+    if(na) Rf_error("NA values are not permitted.");
 
     size_t out_size;
     hull hulls[] = {chull_graham, chull_andrew, chull_quick};
