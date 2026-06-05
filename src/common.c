@@ -162,12 +162,10 @@ static void quicksort_parallel(Point* A, Point zero, int lo, int hi, int depth){
 
     Point pivot = medianThree(zero, A[lo], A[(lo+hi)/2], A[hi]);
     
-    fprintf(stderr, "lo=%d hi=%d angle(lo)=%d, angle(hi)=%d\n", lo, hi, Angle(zero, A[lo], pivot), Angle(zero, A[hi], pivot));
     if (hi - lo <= INSERTION_THRESHOLD){
         insertionsort(A, zero, lo, hi);
         return;
     }
-
 
     int lt = lo, gt = hi, i = lo;
     while(i <= gt){
@@ -176,6 +174,8 @@ static void quicksort_parallel(Point* A, Point zero, int lo, int hi, int depth){
         else if(c < 0) swap(&A[i],    &A[gt--]);
         else           i++;
     }
+
+    fprintf(stderr, "lo=%d hi=%d angle(lo)=%d, angle(hi)=%d\n lt=%d gt=%d", lo, hi, Angle(zero, A[lo], pivot), Angle(zero, A[hi], pivot), lt, gt);
 
     if(dup(A[lo], A[lt]) && dup(A[gt], A[hi])) return;
 
