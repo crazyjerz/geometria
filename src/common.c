@@ -182,7 +182,6 @@ static void quicksort_parallel(Point* A, Point zero, int lo, int hi, int depth){
         lt += 1;
         gt += 1;
     }
-    fprintf(stderr, "lo=%d hi=%d angle(lo)=%d, angle(hi)=%d lt=%d gt=%d\n", lo, hi, Angle(zero, A[lo], pivot), Angle(zero, A[hi], pivot), lt, gt);
 
     if(dup(A[lo], A[lt]) && dup(A[gt], A[hi])) return;
 
