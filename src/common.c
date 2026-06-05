@@ -48,10 +48,10 @@ static inline int lex(Point a, Point b){
 }
 
 static inline Point medianThree(Point zero, Point a, Point b, Point c){
-    int g = (Angle(zero, a, b) > 0);
-    if ((g ^ (Angle(zero, a, c))) > 0) return a;
-    else if ((g ^ (Angle(zero, b, c))) < 0) return b;
-    else return c;
+    if(Angle(zero, a, b) > 0) { Point t = a; a = b; b = t; }
+    if(Angle(zero, b, c) > 0) { Point t = b; b = c; c = t; }
+    if(Angle(zero, a, b) > 0) { Point t = a; a = b; b = t; }
+    return b;
 }
 
 static inline Point medianThree_lex(Point a, Point b, Point c){
@@ -174,8 +174,11 @@ static void quicksort_parallel(Point* A, Point zero, int lo, int hi, int depth){
         else if(c < 0) swap(&A[i],    &A[gt--]);
         else           i++;
     }
-
-    fprintf(stderr, "lo=%d hi=%d angle(lo)=%d, angle(hi)=%d\n lt=%d gt=%d", lo, hi, Angle(zero, A[lo], pivot), Angle(zero, A[hi], pivot), lt, gt);
+    if(lt == hi + 1 && gt == hi){
+        lt -= 1;
+        gt -= 1;
+    }
+    fprintf(stderr, "lo=%d hi=%d angle(lo)=%d, angle(hi)=%d lt=%d gt=%d\n", lo, hi, Angle(zero, A[lo], pivot), Angle(zero, A[hi], pivot), lt, gt);
 
     if(dup(A[lo], A[lt]) && dup(A[gt], A[hi])) return;
 
