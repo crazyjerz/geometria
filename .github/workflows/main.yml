@@ -16,7 +16,7 @@ jobs:
         config:
           - {os: ubuntu-latest, r: 'release'}
           - {os: windows-latest, r: 'release'}
-          #- {os: macos-latest, r: 'release'} # tymczasowe usunięcie, nie działa
+          - {os: macos-latest, r: 'release'}
 
     steps:
       - uses: actions/checkout@v4
@@ -25,14 +25,14 @@ jobs:
         with:
           r-version: ${{ matrix.config.r }}
 
-      - uses: r-lib/actions/setup-r-dependencies@v2
-        with:
-          extra-packages: any::rcmdcheck, any::tinytest, any::roxygen2
-
       - name: Install OpenMP (macOS)
         if: runner.os == 'macOS'
         run: |
           brew install libomp
+
+      - uses: r-lib/actions/setup-r-dependencies@v2
+        with:
+          extra-packages: any::rcmdcheck, any::tinytest, any::roxygen2
 
       - uses: r-lib/actions/check-r-package@v2
         with:

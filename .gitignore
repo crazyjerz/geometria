@@ -14,3 +14,4 @@ geometria.Rproj
 \.lintr.R
 *.tar.gz
 geometria.Rcheck/*
+.Rproj.user

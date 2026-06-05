@@ -6,3 +6,5 @@
 ^\.Rcheck/.*$
 ^\.Rproj\.user/.*$
 ^\.github/.*$
+^.*\.Rproj$
+^\.Rproj\.user$
