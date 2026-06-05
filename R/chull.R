@@ -19,7 +19,7 @@ modes <- c("values", "indices")
 #' x <- runif(1000)
 #' y <- runif(1000)
 #' 
-#' C.chull(x, y, "graham", "values")
+#' C.chull(x, y, "andrew", "values")
 #' 
 #' c <- C.chull(x, y)
 #' 

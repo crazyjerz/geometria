@@ -159,7 +159,7 @@ static void insertionsort_lex(Point* A, int lo, int hi){
 
 static void quicksort_parallel(Point* A, Point zero, int lo, int hi, int depth){
     if(lo >= hi) return;
-    fprintf(stderr, "lo=%d hi=%d", lo, hi);
+    fprintf(stderr, "lo=%d hi=%d A[lo]=(%.4f %.4f) A[hi]=(%.4f %.4f)\n", lo, hi, A[lo].x, A[lo].y, A[hi].x, A[hi].y);
     if (hi - lo <= INSERTION_THRESHOLD){
         insertionsort(A, zero, lo, hi);
         return;
@@ -193,6 +193,7 @@ static void quicksort_parallel(Point* A, Point zero, int lo, int hi, int depth){
 
 static void quicksort_parallel_lex(Point* A, int lo, int hi, int depth){
     if(lo >= hi) return;
+    fprintf(stderr, "lo=%d hi=%d A[lo]=(%.4f %.4f) A[hi]=(%.4f %.4f)\n", lo, hi, A[lo].x, A[lo].y, A[hi].x, A[hi].y);
     Point pivot = medianThree_lex(A[lo], A[(lo+hi)/2], A[hi]);
 
     if (hi - lo <= INSERTION_THRESHOLD){
