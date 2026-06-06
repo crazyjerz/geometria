@@ -1,0 +1,33 @@
+---
+title: "Benchmarks"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Benchmarks}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+## Comparison with builtin `grDevices::chull`
+Each sample is of the size of `100 000 000` points.
+
+`rcauchy`, `runif`, `rnorm` – numbers drawn from the Cauchy, uniform and normal distribution.
+
+"Segment": all points are collinear and located on the `(0, 0) – (1, 1)` segment.
+
+Tested on: Windows 10 IoT Enterprise LTSC, Intel Core i7-14700HX @ 2.10 GHz (20c/28t).
+
+```{r echo=FALSE}
+library(knitr)
+results <- data.frame(
+  Rozkład = c("rcauchy", "runif", "rnorm", "segment"),
+  geometria = c(1.405, 1.882, 1.492, 1.241),
+  base_chull = c(2.291, 2.819, 2.277, 1.505)
+)
+```
+
+```{r echo=FALSE}
+barplot(rbind(results$geometria, results$base_chull),
+        beside=TRUE, names.arg=results$Rozkład,
+        legend.text=c("geometria", "grDevices::chull"),
+        ylab="czas [s]", main="n = 1e8")
+```

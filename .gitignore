@@ -16,3 +16,4 @@ geometria.Rproj
 geometria.Rcheck/*
 .Rproj.user
 docs
+inst/doc

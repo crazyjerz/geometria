@@ -1,4 +1,21 @@
 url: https://crazyjerz.github.io/geometria/
+
+
+navbar:
+  structure:
+    left: [intro, reference, benchmarks, algorithms]
+  components:
+    benchmarks:
+      text: Benchmarks
+      href: articles/benchmarks.html
+    algorithms:
+      text: Algorithms
+      href: articles/algorithms.html
+    articles: ~
+    
 template:
   bootstrap: 5
+  bootswatch: sandstone
+  bslib:
+    success: "#6e40ed"
 
