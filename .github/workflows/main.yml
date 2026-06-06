@@ -16,7 +16,7 @@ jobs:
         config:
           - {os: ubuntu-latest, r: 'release'}
           - {os: windows-latest, r: 'release'}
-          #- {os: macos-latest, r: 'release'} #temporary – token wastage precaution
+          - {os: macos-latest, r: 'release'}
 
     steps:
       - uses: actions/checkout@v4
