@@ -14,7 +14,9 @@ Each sample is of the size of `100 000 000` points.
 
 "Segment": all points are collinear and located on the `(0, 0) – (1, 1)` segment.
 
-Tested on: Windows 10 IoT Enterprise LTSC, Intel Core i7-14700HX @ 2.10 GHz (20c/28t).
+Tested on: Windows 10 IoT Enterprise LTSC, Intel Core i7-14700HX @ 2.304 GHz (20c/28t).
+
+Exact code used for `geometria`: `C.chull(x, y, "quick", "indices")` (the Quickhull algorithm).
 
 ```{r echo=FALSE}
 library(knitr)

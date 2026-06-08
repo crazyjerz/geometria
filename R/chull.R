@@ -27,6 +27,8 @@ modes <- c("values", "indices")
 #'
 #' @export
 C.chull <- function(x, y, algorithm = "quick", mode = "indices"){
+    if(length(x) == 0 || length(y) == 0) return(integer(0))
+    if(!is.numeric(x) || !is.numeric(y)) stop("Erroneous type. Numeric vectors are required.")
     alg <- match(algorithm, algorithms)
     md <- match(mode, modes)
     if(is.na(alg)) stop("Erroneous algorithm")

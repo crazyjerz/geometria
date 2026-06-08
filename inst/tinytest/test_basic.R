@@ -8,6 +8,8 @@ run <- function(x, y, v = c(1, 2, 3)){
 }
 
 hull_equal <- function(x, y, h1, h2, tol = 1e-12){
+    if(all(h1 == h2)) return(TRUE)
+
     if(length(h1) != length(h2)) return(FALSE)
 
     pts <- cbind(x, y)
@@ -37,3 +39,6 @@ run(c(0, 0, 0, 0, 0), c(0, 0, 0, 0, 0))
 
 # test 5: duplicates inside of triangle
 run(c(-1, 1, 1, 0, 0, 0, 0, 0), c(-1, -1, 0, 0, 0, 0, 0, 0))
+
+# test 6: nothing
+run(c(), c())
