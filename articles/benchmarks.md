@@ -10,7 +10,10 @@ normal distribution.
 “Segment”: all points are collinear and located on the `(0, 0) – (1, 1)`
 segment.
 
-Tested on: Windows 10 IoT Enterprise LTSC, Intel Core i7-14700HX @ 2.10
+Tested on: Windows 10 IoT Enterprise LTSC, Intel Core i7-14700HX @ 2.304
 GHz (20c/28t).
+
+Exact code used for `geometria`: `C.chull(x, y, "quick", "indices")`
+(the Quickhull algorithm).
 
 ![](benchmarks_files/figure-html/unnamed-chunk-2-1.png)
