@@ -3,7 +3,7 @@ url: https://crazyjerz.github.io/geometria/
 
 navbar:
   structure:
-    left: [intro, reference, benchmarks, algorithms]
+    left: [intro, reference, benchmarks, algorithms, examples]
   components:
     benchmarks:
       text: Benchmarks
@@ -11,6 +11,9 @@ navbar:
     algorithms:
       text: Algorithms
       href: articles/algorithms.html
+    examples:
+      text: Examples
+      href: articles/examples.html
     articles: ~
     
 template:
