@@ -32,5 +32,6 @@ C.chull <- function(x, y, algorithm = "quick", mode = "indices"){
     alg <- match(algorithm, algorithms)
     md <- match(mode, modes)
     if(is.na(alg)) stop("Erroneous algorithm")
+    if(is.na(md)) stop("Erroneous mode")
     .Call("krak", as.numeric(x), as.numeric(y), as.integer(alg-1), as.integer(md))
 }
