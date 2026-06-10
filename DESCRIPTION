@@ -1,7 +1,7 @@
 Package: geometria
 Type: Package
 Title: Convex Hulls for R
-Version: 1.0.0
+Version: 1.0.1
 Authors@R: 
     person(
         given = "Jerzy",
