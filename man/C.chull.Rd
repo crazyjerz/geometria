@@ -7,9 +7,9 @@
 C.chull(x, y, algorithm = "quick", mode = "indices")
 }
 \arguments{
-\item{x}{Numeric vector of values corresponding to the points’ X coordinate.}
+\item{x}{Numeric vector of finite values corresponding to the points’ X coordinate.}
 
-\item{y}{Numeric vector of values corresponding to the points’ Y coordinate.}
+\item{y}{Numeric vector of finite values corresponding to the points’ Y coordinate.}
 
 \item{algorithm}{String determining the algorithm used to compute the convex hull. Available values are: c("graham", "andrew", "quick").}
 

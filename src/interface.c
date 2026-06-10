@@ -32,7 +32,10 @@ SEXP chull(SEXP X, SEXP Y, SEXP alg, SEXP restype){
         in[i].idx = i+1;
     }
 
-    if(na) Rf_error("NA values are not permitted.");
+    if(na){
+        free(in);
+        Rf_error("NA values are not permitted.");
+    }
 
     size_t out_size;
     hull hulls[] = {chull_graham, chull_andrew, chull_quick};
