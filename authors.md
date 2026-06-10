@@ -7,12 +7,12 @@
 ## Citation
 
 Adrjan J (2026). *geometria: Convex Hulls for R*. R package version
-1.0.0, <https://crazyjerz.github.io/geometria/>.
+1.0.1, <https://crazyjerz.github.io/geometria/>.
 
     @Manual{,
       title = {geometria: Convex Hulls for R},
       author = {Jerzy Adrjan},
       year = {2026},
-      note = {R package version 1.0.0},
+      note = {R package version 1.0.1},
       url = {https://crazyjerz.github.io/geometria/},
     }
