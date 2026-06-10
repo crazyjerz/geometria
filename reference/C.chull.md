@@ -12,11 +12,13 @@ C.chull(x, y, algorithm = "quick", mode = "indices")
 
 - x:
 
-  Numeric vector of values corresponding to the points’ X coordinate.
+  Numeric vector of finite values corresponding to the points’ X
+  coordinate.
 
 - y:
 
-  Numeric vector of values corresponding to the points’ Y coordinate.
+  Numeric vector of finite values corresponding to the points’ Y
+  coordinate.
 
 - algorithm:
 
