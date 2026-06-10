@@ -22,7 +22,7 @@ SEXP chull(SEXP X, SEXP Y, SEXP alg, SEXP restype){
     #pragma omp parallel for if(n > 100000) shared(na)
     for(int i = 0; i < n; i++){
         if(na) continue;
-        if(ISNA(px[i]) || ISNA(py[i])){
+        if((!R_finite(px[i])) || !R_finite(py[i])){
             #pragma omp critical
             { na = 1; }
             continue;

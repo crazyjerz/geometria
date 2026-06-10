@@ -5,8 +5,8 @@ modes <- c("values", "indices")
 #'
 #' Calculates convex hull.
 #'
-#' @param x Numeric vector of values corresponding to the points’ X coordinate.
-#' @param y Numeric vector of values corresponding to the points’ Y coordinate.
+#' @param x Numeric vector of finite values corresponding to the points’ X coordinate.
+#' @param y Numeric vector of finite values corresponding to the points’ Y coordinate.
 #' @param algorithm String determining the algorithm used to compute the convex hull. Available values are: c("graham", "andrew", "quick").
 #' @param mode String determining the return values of the function. Available values are: c("values", "indices")
 #'
